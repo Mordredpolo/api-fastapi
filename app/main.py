@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.core.database import init_db
+from app.routes import auth_routes  # ✅ Import du router pour les routes d'authentification
 
 app = FastAPI()
 
@@ -14,3 +15,6 @@ def read_root():
 @app.get("/ping")
 def ping():
     return {"status": "ok"}
+
+# ✅ Inclusion des routes d'authentification
+app.include_router(auth_routes.router)
