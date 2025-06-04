@@ -1,17 +1,18 @@
 import os
+from supabase import create_client, Client
 from dotenv import load_dotenv
-import psycopg2
-from psycopg2.extras import RealDictCursor
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-def init_db():
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+# ✅ Fonction optionnelle pour tester que la connexion fonctionne
+def test_supabase_connection():
     try:
-        conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
-        conn.close()
-        print("✅ Connexion à la base de données réussie.")
+        response = supabase.table("users").select("id").limit(1).execute()
+        print("✅ Connexion à Supabase réussie.")
     except Exception as e:
-        print("❌ Échec de la connexion à la base de données :")
-        print(e)
+        print("❌ Erreur de connexion à Supabase :", e)
