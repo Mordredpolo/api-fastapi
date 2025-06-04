@@ -1,22 +1,17 @@
-import psycopg2
-from psycopg2.extras import RealDictCursor
 import os
+from supabase import create_client, Client
 from dotenv import load_dotenv
 
+# Charger les variables d’environnement depuis le fichier .env
 load_dotenv()
 
-def init_db():
-    try:
-        conn = psycopg2.connect(
-            host=os.getenv("DB_HOST"),
-            dbname=os.getenv("DB_NAME"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            port=os.getenv("DB_PORT"),
-            cursor_factory=RealDictCursor
-        )
-        conn.close()
-        print("✅ Connexion à la base de données réussie.")
-    except Exception as e:
-        print("❌ Échec de la connexion à la base de données :")
-        print(e)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+def get_connection() -> Client:
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        raise ValueError("Les variables SUPABASE_URL ou SUPABASE_KEY ne sont pas définies dans .env")
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
+
+# ✅ Instance globale utilisée dans toutes les routes
+supabase = get_connection()
