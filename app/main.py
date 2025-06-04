@@ -1,12 +1,17 @@
 from fastapi import FastAPI
-from app.core.database import test_connection
+from app.core.database import init_db
 
 app = FastAPI()
 
 @app.on_event("startup")
-def startup():
-    test_connection()
+async def startup_event():
+    init_db()
 
 @app.get("/")
-def root():
+def read_root():
     return {"message": "API FastAPI opérationnelle"}
+
+# ✅ Route pour éviter que Render mette l'API en veille
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}
